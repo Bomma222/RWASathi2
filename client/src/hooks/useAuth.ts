@@ -67,18 +67,40 @@ export const useAuth = () => {
   };
 
   const verifyOTP = async (otp: string, userData: { name: string; flatNumber: string; tower?: string }) => {
+    // Demo mode: Check if this is a demo phone number from the previous step
+    const currentPhoneNumber = window.demoPhoneNumber || auth.currentUser?.phoneNumber;
+    
+    if (otp === '123456' && (currentPhoneNumber === "+919876543210" || currentPhoneNumber === "+919876543211" || currentPhoneNumber === "+919876543212" || currentPhoneNumber === "+919876543213")) {
+      try {
+        // Direct login for demo users
+        const response = await apiRequest('POST', '/api/auth/login', {
+          phoneNumber: currentPhoneNumber,
+          ...userData,
+        });
+
+        const user = await response.json();
+        setUser({ ...user.user, isAuthenticated: true });
+        // Clean up demo state
+        delete window.demoPhoneNumber;
+        return { success: true, user: user.user };
+      } catch (error: any) {
+        console.error('Demo login error:', error);
+        return { success: false, error: 'Demo login failed' };
+      }
+    }
+
     if (!confirmationResult) {
-      return { success: false, error: 'No OTP sent' };
+      return { success: false, error: 'Use demo numbers for testing: +919876543210 (admin) or +919876543211 (resident)' };
     }
 
     try {
       const result = await confirmationResult.confirm(otp);
-      const phoneNumber = result.user.phoneNumber;
+      const userPhoneNumber = result.user.phoneNumber;
 
-      if (phoneNumber) {
+      if (userPhoneNumber) {
         // Register or login user in our database
         const response = await apiRequest('POST', '/api/auth/login', {
-          phoneNumber,
+          phoneNumber: userPhoneNumber,
           ...userData,
         });
 

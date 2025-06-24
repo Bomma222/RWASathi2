@@ -26,6 +26,19 @@ export default function Login() {
     e.preventDefault();
     setLoading(true);
 
+    // Demo mode: Skip Firebase OTP for testing
+    if (phoneNumber === "+919876543210" || phoneNumber === "+919876543211" || phoneNumber === "+919876543212" || phoneNumber === "+919876543213") {
+      // Store phone number for demo verification
+      (window as any).demoPhoneNumber = phoneNumber;
+      setStep('otp');
+      toast({
+        title: "Demo Mode",
+        description: "Use OTP: 123456 for demo login",
+      });
+      setLoading(false);
+      return;
+    }
+
     const result = await sendOTP(phoneNumber);
     if (result.success) {
       setStep('otp');
@@ -35,8 +48,8 @@ export default function Login() {
       });
     } else {
       toast({
-        title: "Error",
-        description: result.error || "Failed to send OTP",
+        title: "Demo Mode Available",
+        description: "Use +919876543210 (admin) or +919876543211 (resident) for demo",
         variant: "destructive",
       });
     }
@@ -103,6 +116,28 @@ export default function Login() {
             <LanguageToggle />
           </div>
         </div>
+
+        {/* Demo Login Panel */}
+        <Card className="mb-4 border-blue-200 bg-blue-50">
+          <CardContent className="pt-4">
+            <h3 className="font-semibold text-blue-800 mb-2">Demo Login (Testing)</h3>
+            <p className="text-sm text-blue-700 mb-3">Use these credentials for testing:</p>
+            <div className="space-y-2 text-sm">
+              <div className="flex justify-between">
+                <span className="font-medium">Admin:</span>
+                <span>+919876543210</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="font-medium">Resident:</span>
+                <span>+919876543211</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="font-medium">OTP:</span>
+                <span>123456</span>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
 
         <Card>
           <CardContent className="pt-6">
