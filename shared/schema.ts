@@ -17,10 +17,26 @@ export const bills = pgTable("bills", {
   id: serial("id").primaryKey(),
   flatNumber: varchar("flat_number", { length: 10 }).notNull(),
   residentId: integer("resident_id").references(() => users.id),
-  amount: decimal("amount", { precision: 10, scale: 2 }).notNull(),
   month: varchar("month", { length: 7 }).notNull(), // YYYY-MM format
+  
+  // Water charges
+  pastWaterReading: integer("past_water_reading").default(0),
+  presentWaterReading: integer("present_water_reading").default(0),
+  usedLiters: integer("used_liters").default(0),
+  waterBill: decimal("water_bill", { precision: 10, scale: 2 }).default("0"),
+  
+  // Fixed charges
+  generalMaintenance: decimal("general_maintenance", { precision: 10, scale: 2 }).default("1000"),
+  repairCharges: decimal("repair_charges", { precision: 10, scale: 2 }).default("0"),
+  
+  // Previous dues and payments
+  previousDues: decimal("previous_dues", { precision: 10, scale: 2 }).default("0"),
+  totalAmount: decimal("total_amount", { precision: 10, scale: 2 }).notNull(),
+  presentDues: decimal("present_dues", { precision: 10, scale: 2 }).notNull(),
+  
+  // Status and dates
+  status: varchar("status", { length: 20 }).notNull().default("unpaid"), // 'paid', 'unpaid', 'overdue', 'partially_cleared'
   dueDate: timestamp("due_date").notNull(),
-  status: varchar("status", { length: 20 }).notNull().default("unpaid"), // 'paid', 'unpaid', 'overdue'
   paidAt: timestamp("paid_at"),
   createdAt: timestamp("created_at").notNull().defaultNow(),
 });

@@ -101,23 +101,76 @@ export class MemStorage implements IStorage {
       this.users.set(user.id, user);
     });
 
-    // Demo bills
+    // Demo bills with detailed breakdown like the maintenance sheet
     const currentMonth = new Date().toISOString().slice(0, 7);
     const dueDate = new Date();
     dueDate.setDate(dueDate.getDate() + 5);
 
-    const bills = [
-      { flatNumber: "101", residentId: 1, amount: "3500", status: "paid" as const },
-      { flatNumber: "102", residentId: 2, amount: "3500", status: "unpaid" as const },
-      { flatNumber: "201", residentId: 3, amount: "4000", status: "unpaid" as const },
-      { flatNumber: "301", residentId: 4, amount: "3500", status: "overdue" as const },
+    const detailedBills = [
+      {
+        flatNumber: "G1", residentId: 1, 
+        pastWaterReading: 142116, presentWaterReading: 143816, 
+        generalMaintenance: "1000", repairCharges: "0", previousDues: "0",
+        status: "paid" as const
+      },
+      {
+        flatNumber: "G2", residentId: 2,
+        pastWaterReading: 84356, presentWaterReading: 87320,
+        generalMaintenance: "1000", repairCharges: "0", previousDues: "0", 
+        status: "unpaid" as const
+      },
+      {
+        flatNumber: "G3", residentId: 3,
+        pastWaterReading: 91202, presentWaterReading: 91602,
+        generalMaintenance: "1000", repairCharges: "0", previousDues: "0",
+        status: "unpaid" as const
+      },
+      {
+        flatNumber: "G4", residentId: 4,
+        pastWaterReading: 119843, presentWaterReading: 121377,
+        generalMaintenance: "1000", repairCharges: "198.83", previousDues: "0",
+        status: "overdue" as const
+      },
+      {
+        flatNumber: "101", residentId: 2,
+        pastWaterReading: 104361, presentWaterReading: 106068,
+        generalMaintenance: "1000", repairCharges: "0", previousDues: "0",
+        status: "unpaid" as const
+      },
+      {
+        flatNumber: "102", residentId: 3,
+        pastWaterReading: 134074, presentWaterReading: 135098,
+        generalMaintenance: "1000", repairCharges: "0", previousDues: "0",
+        status: "unpaid" as const
+      },
+      {
+        flatNumber: "103", residentId: 4,
+        pastWaterReading: 109172, presentWaterReading: 109579,
+        generalMaintenance: "1000", repairCharges: "30000", previousDues: "0",
+        status: "partially_cleared" as const
+      }
     ];
 
-    bills.forEach(bill => {
+    detailedBills.forEach(bill => {
+      const usedLiters = bill.presentWaterReading - bill.pastWaterReading;
+      const waterBill = usedLiters * 0.05; // ₹0.05 per liter
+      const totalAmount = waterBill + Number(bill.generalMaintenance) + Number(bill.repairCharges) + Number(bill.previousDues);
+      
       const billData: Bill = {
         id: this.currentBillId++,
-        ...bill,
+        flatNumber: bill.flatNumber,
+        residentId: bill.residentId,
         month: currentMonth,
+        pastWaterReading: bill.pastWaterReading,
+        presentWaterReading: bill.presentWaterReading,
+        usedLiters,
+        waterBill: waterBill.toString(),
+        generalMaintenance: bill.generalMaintenance,
+        repairCharges: bill.repairCharges,
+        previousDues: bill.previousDues,
+        totalAmount: totalAmount.toString(),
+        presentDues: bill.status === "paid" ? "0" : totalAmount.toString(),
+        status: bill.status,
         dueDate,
         paidAt: bill.status === "paid" ? new Date() : null,
         createdAt: new Date(),
@@ -266,9 +319,25 @@ export class MemStorage implements IStorage {
 
   async createBill(insertBill: InsertBill): Promise<Bill> {
     const id = this.currentBillId++;
+    
+    // Calculate water charges based on usage
+    const usedLiters = (insertBill.presentWaterReading || 0) - (insertBill.pastWaterReading || 0);
+    const waterRate = 0.05; // ₹0.05 per liter
+    const waterBill = usedLiters * waterRate;
+    
+    // Calculate total amount
+    const generalMaintenance = insertBill.generalMaintenance || 1000;
+    const repairCharges = insertBill.repairCharges || 0;
+    const previousDues = insertBill.previousDues || 0;
+    const totalAmount = waterBill + Number(generalMaintenance) + Number(repairCharges) + Number(previousDues);
+    
     const bill: Bill = {
       ...insertBill,
       id,
+      usedLiters,
+      waterBill: waterBill.toString(),
+      totalAmount: totalAmount.toString(),
+      presentDues: totalAmount.toString(),
       status: insertBill.status || "unpaid",
       residentId: insertBill.residentId || null,
       paidAt: null,

@@ -6,10 +6,12 @@ import { apiRequest, queryClient } from '@/lib/queryClient';
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useToast } from '@/hooks/use-toast';
+import { useLocation } from 'wouter';
 
 export default function BillingModule() {
   const { user } = useAuth();
   const { toast } = useToast();
+  const [, setLocation] = useLocation();
   const [filterStatus, setFilterStatus] = useState<string>('all');
 
   const { data: bills, isLoading } = useQuery({
@@ -64,12 +66,22 @@ export default function BillingModule() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <h2 className="text-xl font-semibold text-gray-800">{t('maintenanceBilling')}</h2>
-        {user?.role === 'admin' && (
-          <Button className="bg-primary text-white">
-            <i className="fas fa-plus mr-2"></i>
-            {t('generateBills')}
+        <div className="flex gap-2">
+          <Button 
+            variant="outline"
+            onClick={() => setLocation('/bills/detailed')}
+            className="text-sm"
+          >
+            <i className="fas fa-table mr-2"></i>
+            Detailed View
           </Button>
-        )}
+          {user?.role === 'admin' && (
+            <Button className="bg-primary text-white">
+              <i className="fas fa-plus mr-2"></i>
+              {t('generateBills')}
+            </Button>
+          )}
+        </div>
       </div>
 
       {/* Bill Summary Cards */}
@@ -113,7 +125,7 @@ export default function BillingModule() {
                 </p>
               </div>
               <div className="text-right">
-                <p className="font-semibold text-gray-800">₹{parseFloat(bill.amount).toLocaleString()}</p>
+                <p className="font-semibold text-gray-800">₹{parseFloat(bill.totalAmount || bill.amount || '0').toLocaleString()}</p>
                 <div className="flex items-center space-x-2">
                   <span className={`inline-block px-2 py-1 text-xs rounded-full ${getStatusColor(bill.status)}`}>
                     {getStatusText(bill.status)}
