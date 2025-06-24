@@ -14,6 +14,39 @@ export const useAuth = () => {
   const [confirmationResult, setConfirmationResult] = useState<ConfirmationResult | null>(null);
 
   useEffect(() => {
+    // Check for saved user session first
+    const savedUser = localStorage.getItem('rwaSathiUser');
+    if (savedUser) {
+      try {
+        const userData = JSON.parse(savedUser);
+        setUser({ ...userData, isAuthenticated: true });
+        setLoading(false);
+        return;
+      } catch (error) {
+        localStorage.removeItem('rwaSathiUser');
+      }
+    }
+
+    // Auto-login as admin for development
+    if (import.meta.env.DEV) {
+      const autoLoginAdmin = async () => {
+        try {
+          const response = await fetch('/api/users/phone/+919876543210');
+          if (response.ok) {
+            const userData = await response.json();
+            setUser({ ...userData, isAuthenticated: true });
+            localStorage.setItem('rwaSathiUser', JSON.stringify(userData));
+          }
+        } catch (error) {
+          console.error('Auto-login failed:', error);
+        }
+        setLoading(false);
+      };
+      
+      autoLoginAdmin();
+      return;
+    }
+
     const unsubscribe = auth.onAuthStateChanged(async (firebaseUser) => {
       if (firebaseUser && firebaseUser.phoneNumber) {
         try {
@@ -25,6 +58,7 @@ export const useAuth = () => {
           if (response.ok) {
             const userData = await response.json();
             setUser({ ...userData, isAuthenticated: true });
+            localStorage.setItem('rwaSathiUser', JSON.stringify(userData));
           } else {
             // User not found in database but authenticated with Firebase
             setUser(null);
@@ -121,6 +155,7 @@ export const useAuth = () => {
       await auth.signOut();
       setUser(null);
       setConfirmationResult(null);
+      localStorage.removeItem('rwaSathiUser');
       
       // Clear recaptcha
       if (window.recaptchaVerifier) {
