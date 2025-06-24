@@ -1,10 +1,12 @@
 import { 
-  users, bills, complaints, notices, activities,
+  users, bills, complaints, notices, activities, billingFields, billItems,
   type User, type InsertUser,
   type Bill, type InsertBill,
   type Complaint, type InsertComplaint,
   type Notice, type InsertNotice,
-  type Activity, type InsertActivity
+  type Activity, type InsertActivity,
+  type BillingField, type InsertBillingField,
+  type BillItem, type InsertBillItem
 } from "@shared/schema";
 
 export interface IStorage {
@@ -72,11 +74,15 @@ export class MemStorage implements IStorage {
     this.complaints = new Map();
     this.notices = new Map();
     this.activities = new Map();
+    this.billingFields = new Map();
+    this.billItems = new Map();
     this.currentUserId = 1;
     this.currentBillId = 1;
     this.currentComplaintId = 1;
     this.currentNoticeId = 1;
     this.currentActivityId = 1;
+    this.currentBillingFieldId = 1;
+    this.currentBillItemId = 1;
     
     // Add demo data
     this.initializeDemoData();
@@ -280,6 +286,85 @@ export class MemStorage implements IStorage {
       };
       this.activities.set(activityData.id, activityData);
     });
+
+    // Initialize default billing fields
+    const defaultBillingFields = [
+      {
+        name: "pastWaterReading",
+        label: "Past Water Reading",
+        type: "variable" as const,
+        category: "water",
+        defaultValue: "0",
+        sortOrder: 1,
+        description: "Previous month's water meter reading"
+      },
+      {
+        name: "presentWaterReading", 
+        label: "Present Water Reading",
+        type: "variable" as const,
+        category: "water",
+        defaultValue: "0",
+        sortOrder: 2,
+        description: "Current month's water meter reading"
+      },
+      {
+        name: "usedLiters",
+        label: "Used Liters",
+        type: "calculated" as const,
+        category: "water",
+        defaultValue: "0",
+        sortOrder: 3,
+        formula: "presentWaterReading - pastWaterReading",
+        description: "Water consumption in liters"
+      },
+      {
+        name: "waterBill",
+        label: "Water Bill",
+        type: "calculated" as const,
+        category: "water",
+        defaultValue: "0",
+        sortOrder: 4,
+        formula: "usedLiters * 0.05",
+        description: "Water charges at ₹0.05 per liter"
+      },
+      {
+        name: "generalMaintenance",
+        label: "General Maintenance",
+        type: "fixed" as const,
+        category: "maintenance",
+        defaultValue: "1000",
+        sortOrder: 5,
+        description: "Fixed monthly maintenance charges"
+      },
+      {
+        name: "repairCharges",
+        label: "Repair Charges",
+        type: "variable" as const,
+        category: "charges",
+        defaultValue: "0",
+        sortOrder: 6,
+        description: "Additional repair and maintenance costs"
+      },
+      {
+        name: "previousDues",
+        label: "Previous Dues",
+        type: "variable" as const,
+        category: "dues",
+        defaultValue: "0",
+        sortOrder: 7,
+        description: "Outstanding amount from previous months"
+      }
+    ];
+
+    defaultBillingFields.forEach(field => {
+      const fieldData: BillingField = {
+        id: this.currentBillingFieldId++,
+        ...field,
+        isActive: true,
+        createdAt: new Date(),
+      };
+      this.billingFields.set(fieldData.id, fieldData);
+    });
   }
 
   // Users
@@ -451,6 +536,55 @@ export class MemStorage implements IStorage {
     };
     this.activities.set(id, activity);
     return activity;
+  }
+
+  // Billing Fields methods
+  async getBillingFields(): Promise<BillingField[]> {
+    return Array.from(this.billingFields.values())
+      .filter(field => field.isActive)
+      .sort((a, b) => (a.sortOrder || 0) - (b.sortOrder || 0));
+  }
+
+  async createBillingField(insertField: InsertBillingField): Promise<BillingField> {
+    const id = this.currentBillingFieldId++;
+    const field: BillingField = {
+      ...insertField,
+      id,
+      isActive: insertField.isActive ?? true,
+      sortOrder: insertField.sortOrder ?? 0,
+      createdAt: new Date(),
+    };
+    this.billingFields.set(id, field);
+    return field;
+  }
+
+  async updateBillingField(id: number, updates: Partial<InsertBillingField>): Promise<BillingField | undefined> {
+    const field = this.billingFields.get(id);
+    if (!field) return undefined;
+
+    const updatedField: BillingField = { ...field, ...updates };
+    this.billingFields.set(id, updatedField);
+    return updatedField;
+  }
+
+  async deleteBillingField(id: number): Promise<boolean> {
+    return this.billingFields.delete(id);
+  }
+
+  // Bill Items methods
+  async getBillItems(billId: number): Promise<BillItem[]> {
+    return Array.from(this.billItems.values()).filter(item => item.billId === billId);
+  }
+
+  async createBillItem(insertItem: InsertBillItem): Promise<BillItem> {
+    const id = this.currentBillItemId++;
+    const item: BillItem = {
+      ...insertItem,
+      id,
+      createdAt: new Date(),
+    };
+    this.billItems.set(id, item);
+    return item;
   }
 }
 

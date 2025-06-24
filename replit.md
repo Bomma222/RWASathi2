@@ -124,7 +124,10 @@ Preferred communication style: Simple, everyday language.
   - Full-stack React + Firebase authentication system
   - Mobile-first responsive design with Telugu/English localization
   - Admin dashboard with resident management and analytics
-  - Billing system with payment tracking and status management  
+  - Enhanced billing system with customizable fields and detailed breakdown
+  - Water meter reading tracking with automatic charge calculation
+  - Complex billing structure matching real maintenance sheets
+  - Admin billing field configuration system for customizable charges
   - Complaint management with photo uploads and priority levels
   - Notice posting system with importance flags
   - Demo data and authentication for testing

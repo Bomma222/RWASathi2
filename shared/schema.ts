@@ -74,6 +74,28 @@ export const activities = pgTable("activities", {
   createdAt: timestamp("created_at").notNull().defaultNow(),
 });
 
+export const billingFields = pgTable("billing_fields", {
+  id: serial("id").primaryKey(),
+  name: varchar("name", { length: 100 }).notNull(),
+  label: varchar("label", { length: 100 }).notNull(),
+  type: varchar("type", { length: 20 }).notNull(), // 'fixed', 'variable', 'calculated'
+  category: varchar("category", { length: 50 }).notNull(), // 'water', 'maintenance', 'charges', 'dues'
+  defaultValue: decimal("default_value", { precision: 10, scale: 2 }).default("0"),
+  isActive: boolean("is_active").notNull().default(true),
+  sortOrder: integer("sort_order").default(0),
+  description: text("description"),
+  formula: text("formula"), // For calculated fields
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+});
+
+export const billItems = pgTable("bill_items", {
+  id: serial("id").primaryKey(),
+  billId: integer("bill_id").references(() => bills.id, { onDelete: "cascade" }).notNull(),
+  fieldId: integer("field_id").references(() => billingFields.id).notNull(),
+  value: decimal("value", { precision: 10, scale: 2 }).notNull(),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+});
+
 // Insert schemas
 export const insertUserSchema = createInsertSchema(users).omit({
   id: true,
@@ -102,6 +124,16 @@ export const insertActivitySchema = createInsertSchema(activities).omit({
   createdAt: true,
 });
 
+export const insertBillingFieldSchema = createInsertSchema(billingFields).omit({
+  id: true,
+  createdAt: true,
+});
+
+export const insertBillItemSchema = createInsertSchema(billItems).omit({
+  id: true,
+  createdAt: true,
+});
+
 // Types
 export type User = typeof users.$inferSelect;
 export type InsertUser = z.infer<typeof insertUserSchema>;
@@ -117,3 +149,9 @@ export type InsertNotice = z.infer<typeof insertNoticeSchema>;
 
 export type Activity = typeof activities.$inferSelect;
 export type InsertActivity = z.infer<typeof insertActivitySchema>;
+
+export type BillingField = typeof billingFields.$inferSelect;
+export type InsertBillingField = z.infer<typeof insertBillingFieldSchema>;
+
+export type BillItem = typeof billItems.$inferSelect;
+export type InsertBillItem = z.infer<typeof insertBillItemSchema>;
