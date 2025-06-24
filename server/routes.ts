@@ -276,6 +276,83 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Billing Fields routes
+  app.get("/api/billing-fields", async (req: Request, res: Response) => {
+    try {
+      const fields = await storage.getBillingFields();
+      res.json(fields);
+    } catch (error) {
+      console.error("Error fetching billing fields:", error);
+      res.status(500).json({ error: "Failed to fetch billing fields" });
+    }
+  });
+
+  app.post("/api/billing-fields", async (req: Request, res: Response) => {
+    try {
+      const insertFieldSchema = z.object({
+        name: z.string(),
+        label: z.string(),
+        type: z.enum(["fixed", "variable", "calculated"]),
+        category: z.string(),
+        defaultValue: z.string().optional(),
+        description: z.string().optional(),
+        formula: z.string().optional(),
+        sortOrder: z.number().optional(),
+      });
+      
+      const fieldData = insertFieldSchema.parse(req.body);
+      const field = await storage.createBillingField(fieldData);
+      res.json(field);
+    } catch (error) {
+      console.error("Error creating billing field:", error);
+      res.status(500).json({ error: "Failed to create billing field" });
+    }
+  });
+
+  app.put("/api/billing-fields/:id", async (req: Request, res: Response) => {
+    try {
+      const id = parseInt(req.params.id);
+      const updateFieldSchema = z.object({
+        label: z.string().optional(),
+        type: z.enum(["fixed", "variable", "calculated"]).optional(),
+        category: z.string().optional(),
+        defaultValue: z.string().optional(),
+        description: z.string().optional(),
+        formula: z.string().optional(),
+        sortOrder: z.number().optional(),
+        isActive: z.boolean().optional(),
+      });
+      
+      const updates = updateFieldSchema.parse(req.body);
+      const field = await storage.updateBillingField(id, updates);
+      
+      if (!field) {
+        return res.status(404).json({ error: "Billing field not found" });
+      }
+      
+      res.json(field);
+    } catch (error) {
+      console.error("Error updating billing field:", error);
+      res.status(500).json({ error: "Failed to update billing field" });
+    }
+  });
+
+  app.delete("/api/billing-fields/:id", async (req: Request, res: Response) => {
+    try {
+      const id = parseInt(req.params.id);
+      const success = await storage.deleteBillingField(id);
+      
+      if (!success) {
+        return res.status(404).json({ error: "Billing field not found" });
+      }
+      
+      res.json({ success: true });
+    } catch (error) {
+      console.error("Error deleting billing field:", error);
+      res.status(500).json({ error: "Failed to delete billing field" });
+    }
+  });
+
   const httpServer = createServer(app);
   return httpServer;
 }
