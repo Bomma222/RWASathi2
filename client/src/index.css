@@ -1,0 +1,393 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --background: hsl(0, 0%, 100%);
+  --foreground: hsl(20, 14.3%, 4.1%);
+  --muted: hsl(60, 4.8%, 95.9%);
+  --muted-foreground: hsl(25, 5.3%, 44.7%);
+  --popover: hsl(0, 0%, 100%);
+  --popover-foreground: hsl(20, 14.3%, 4.1%);
+  --card: hsl(0, 0%, 100%);
+  --card-foreground: hsl(20, 14.3%, 4.1%);
+  --border: hsl(20, 5.9%, 90%);
+  --input: hsl(20, 5.9%, 90%);
+  --primary: hsl(140, 81%, 31%);
+  --primary-foreground: hsl(0, 0%, 100%);
+  --secondary: hsl(35, 100%, 50%);
+  --secondary-foreground: hsl(0, 0%, 100%);
+  --accent: hsl(207, 90%, 54%);
+  --accent-foreground: hsl(0, 0%, 100%);
+  --destructive: hsl(0, 84.2%, 60.2%);
+  --destructive-foreground: hsl(60, 9.1%, 97.8%);
+  --ring: hsl(20, 14.3%, 4.1%);
+  --radius: 0.5rem;
+  --success: hsl(122, 39%, 49%);
+  --warning: hsl(36, 100%, 50%);
+  --error: hsl(4, 90%, 58%);
+}
+
+.dark {
+  --background: hsl(240, 10%, 3.9%);
+  --foreground: hsl(0, 0%, 98%);
+  --muted: hsl(240, 3.7%, 15.9%);
+  --muted-foreground: hsl(240, 5%, 64.9%);
+  --popover: hsl(240, 10%, 3.9%);
+  --popover-foreground: hsl(0, 0%, 98%);
+  --card: hsl(240, 10%, 3.9%);
+  --card-foreground: hsl(0, 0%, 98%);
+  --border: hsl(240, 3.7%, 15.9%);
+  --input: hsl(240, 3.7%, 15.9%);
+  --primary: hsl(140, 81%, 31%);
+  --primary-foreground: hsl(0, 0%, 100%);
+  --secondary: hsl(35, 100%, 50%);
+  --secondary-foreground: hsl(0, 0%, 100%);
+  --accent: hsl(207, 90%, 54%);
+  --accent-foreground: hsl(0, 0%, 100%);
+  --destructive: hsl(0, 62.8%, 30.6%);
+  --destructive-foreground: hsl(0, 0%, 98%);
+  --ring: hsl(240, 4.9%, 83.9%);
+  --radius: 0.5rem;
+  --success: hsl(122, 39%, 49%);
+  --warning: hsl(36, 100%, 50%);
+  --error: hsl(4, 90%, 58%);
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply font-sans antialiased bg-background text-foreground;
+    font-family: 'Noto Sans', 'Roboto', sans-serif;
+  }
+
+  .font-telugu {
+    font-family: 'Noto Sans Telugu', 'Noto Sans', sans-serif;
+  }
+}
+
+@layer components {
+  .text-primary {
+    color: hsl(140, 81%, 31%);
+  }
+
+  .bg-primary {
+    background-color: hsl(140, 81%, 31%);
+  }
+
+  .text-secondary {
+    color: hsl(35, 100%, 50%);
+  }
+
+  .bg-secondary {
+    background-color: hsl(35, 100%, 50%);
+  }
+
+  .text-accent {
+    color: hsl(207, 90%, 54%);
+  }
+
+  .bg-accent {
+    background-color: hsl(207, 90%, 54%);
+  }
+
+  .text-success {
+    color: hsl(122, 39%, 49%);
+  }
+
+  .bg-success {
+    background-color: hsl(122, 39%, 49%);
+  }
+
+  .text-warning {
+    color: hsl(36, 100%, 50%);
+  }
+
+  .bg-warning {
+    background-color: hsl(36, 100%, 50%);
+  }
+
+  .text-error {
+    color: hsl(4, 90%, 58%);
+  }
+
+  .bg-error {
+    background-color: hsl(4, 90%, 58%);
+  }
+
+  .shadow-card {
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  }
+
+  .shadow-elevated {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  }
+
+  /* Mobile-first responsive design */
+  .app-container {
+    max-width: 28rem;
+    margin: 0 auto;
+    background-color: white;
+    min-height: 100vh;
+    position: relative;
+  }
+
+  /* Header styling */
+  .app-header {
+    background: linear-gradient(135deg, hsl(140, 81%, 31%) 0%, hsl(140, 81%, 25%) 100%);
+    color: white;
+    padding: 0.75rem 1rem;
+    position: fixed;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100%;
+    max-width: 28rem;
+    z-index: 40;
+  }
+
+  /* Bottom navigation styling */
+  .bottom-nav {
+    position: fixed;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100%;
+    max-width: 28rem;
+    background-color: white;
+    border-top: 1px solid hsl(20, 5.9%, 90%);
+    padding: 0.5rem 1rem;
+    z-index: 30;
+  }
+
+  /* Card styling to match design */
+  .status-card {
+    background: white;
+    border-radius: 0.5rem;
+    padding: 1rem;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    border: 1px solid hsl(20, 5.9%, 90%);
+  }
+
+  /* Button styling for different states */
+  .btn-primary {
+    background-color: hsl(140, 81%, 31%);
+    color: white;
+    border: none;
+    padding: 0.75rem 1rem;
+    border-radius: 0.5rem;
+    font-weight: 500;
+    transition: all 0.2s ease;
+  }
+
+  .btn-primary:hover {
+    background-color: hsl(140, 81%, 25%);
+  }
+
+  .btn-secondary {
+    background-color: hsl(35, 100%, 50%);
+    color: white;
+    border: none;
+    padding: 0.75rem 1rem;
+    border-radius: 0.5rem;
+    font-weight: 500;
+    transition: all 0.2s ease;
+  }
+
+  .btn-secondary:hover {
+    background-color: hsl(35, 100%, 45%);
+  }
+
+  .btn-accent {
+    background-color: hsl(207, 90%, 54%);
+    color: white;
+    border: none;
+    padding: 0.75rem 1rem;
+    border-radius: 0.5rem;
+    font-weight: 500;
+    transition: all 0.2s ease;
+  }
+
+  .btn-accent:hover {
+    background-color: hsl(207, 90%, 49%);
+  }
+
+  /* Status badge styling */
+  .status-paid {
+    background-color: hsl(122, 39%, 49%);
+    color: white;
+  }
+
+  .status-unpaid {
+    background-color: hsl(36, 100%, 50%);
+    color: white;
+  }
+
+  .status-overdue {
+    background-color: hsl(4, 90%, 58%);
+    color: white;
+  }
+
+  .status-open {
+    background-color: hsl(4, 90%, 58%);
+    color: white;
+  }
+
+  .status-in-progress {
+    background-color: hsl(36, 100%, 50%);
+    color: white;
+  }
+
+  .status-resolved {
+    background-color: hsl(122, 39%, 49%);
+    color: white;
+  }
+
+  /* Activity icon styling */
+  .activity-icon {
+    width: 2rem;
+    height: 2rem;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.75rem;
+  }
+
+  .activity-payment {
+    background-color: hsl(207, 90%, 90%);
+    color: hsl(207, 90%, 54%);
+  }
+
+  .activity-complaint {
+    background-color: hsl(4, 90%, 90%);
+    color: hsl(4, 90%, 58%);
+  }
+
+  .activity-notice {
+    background-color: hsl(35, 100%, 90%);
+    color: hsl(35, 100%, 50%);
+  }
+
+  .activity-bill {
+    background-color: hsl(122, 39%, 90%);
+    color: hsl(122, 39%, 49%);
+  }
+
+  /* Gradient backgrounds for dashboard cards */
+  .gradient-primary {
+    background: linear-gradient(135deg, hsl(140, 81%, 31%) 0%, hsl(140, 81%, 35%) 100%);
+  }
+
+  .gradient-accent {
+    background: linear-gradient(135deg, hsl(207, 90%, 54%) 0%, hsl(207, 90%, 60%) 100%);
+  }
+
+  /* Notice border styling */
+  .notice-important {
+    border-left: 4px solid hsl(4, 90%, 58%);
+  }
+
+  .notice-normal {
+    border-left: 4px solid hsl(35, 100%, 50%);
+  }
+
+  /* Form input styling */
+  .form-input {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid hsl(20, 5.9%, 90%);
+    border-radius: 0.5rem;
+    font-size: 0.875rem;
+    transition: border-color 0.2s ease;
+  }
+
+  .form-input:focus {
+    outline: none;
+    border-color: hsl(140, 81%, 31%);
+    box-shadow: 0 0 0 3px hsla(140, 81%, 31%, 0.1);
+  }
+
+  /* Responsive design adjustments */
+  @media (max-width: 640px) {
+    .app-container {
+      max-width: 100%;
+    }
+    
+    .app-header {
+      max-width: 100%;
+    }
+    
+    .bottom-nav {
+      max-width: 100%;
+    }
+  }
+
+  /* Loading spinner styling */
+  .loading-spinner {
+    border: 2px solid hsl(20, 5.9%, 90%);
+    border-top: 2px solid hsl(140, 81%, 31%);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+  }
+
+  @keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
+
+  /* Language toggle styling */
+  .language-toggle {
+    background-color: rgba(255, 255, 255, 0.2);
+    color: white;
+    padding: 0.25rem 0.5rem;
+    border-radius: 0.25rem;
+    font-size: 0.875rem;
+    border: none;
+    transition: background-color 0.2s ease;
+  }
+
+  .language-toggle:hover {
+    background-color: rgba(255, 255, 255, 0.3);
+  }
+
+  /* Profile menu styling */
+  .profile-menu {
+    background: white;
+    border-radius: 0.5rem;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    padding: 0.5rem;
+    min-width: 12rem;
+  }
+
+  .profile-menu-item {
+    width: 100%;
+    text-align: left;
+    padding: 0.5rem 1rem;
+    font-size: 0.875rem;
+    border-radius: 0.25rem;
+    border: none;
+    background: none;
+    transition: background-color 0.2s ease;
+  }
+
+  .profile-menu-item:hover {
+    background-color: hsl(60, 4.8%, 95.9%);
+  }
+
+  .profile-menu-item.danger {
+    color: hsl(4, 90%, 58%);
+  }
+
+  /* Toast notification positioning for mobile */
+  .toast-container {
+    position: fixed;
+    bottom: 6rem;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 50;
+  }
+}
