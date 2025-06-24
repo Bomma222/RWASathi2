@@ -38,6 +38,16 @@ export interface IStorage {
   // Activities
   getRecentActivities(limit?: number): Promise<Activity[]>;
   createActivity(activity: InsertActivity): Promise<Activity>;
+  
+  // Billing Fields
+  getBillingFields(): Promise<BillingField[]>;
+  createBillingField(field: InsertBillingField): Promise<BillingField>;
+  updateBillingField(id: number, updates: Partial<InsertBillingField>): Promise<BillingField | undefined>;
+  deleteBillingField(id: number): Promise<boolean>;
+  
+  // Bill Items
+  getBillItems(billId: number): Promise<BillItem[]>;
+  createBillItem(item: InsertBillItem): Promise<BillItem>;
 }
 
 export class MemStorage implements IStorage {
@@ -46,11 +56,15 @@ export class MemStorage implements IStorage {
   private complaints: Map<number, Complaint>;
   private notices: Map<number, Notice>;
   private activities: Map<number, Activity>;
+  private billingFields: Map<number, BillingField>;
+  private billItems: Map<number, BillItem>;
   private currentUserId: number;
   private currentBillId: number;
   private currentComplaintId: number;
   private currentNoticeId: number;
   private currentActivityId: number;
+  private currentBillingFieldId: number;
+  private currentBillItemId: number;
 
   constructor() {
     this.users = new Map();

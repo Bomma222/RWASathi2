@@ -76,10 +76,20 @@ export default function BillingModule() {
             Detailed View
           </Button>
           {user?.role === 'admin' && (
-            <Button className="bg-primary text-white">
-              <i className="fas fa-plus mr-2"></i>
-              {t('generateBills')}
-            </Button>
+            <>
+              <Button 
+                variant="outline"
+                onClick={() => setLocation('/bills/fields')}
+                className="text-sm"
+              >
+                <i className="fas fa-cog mr-2"></i>
+                Configure Fields
+              </Button>
+              <Button className="bg-primary text-white">
+                <i className="fas fa-plus mr-2"></i>
+                {t('generateBills')}
+              </Button>
+            </>
           )}
         </div>
       </div>

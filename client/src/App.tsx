@@ -13,6 +13,7 @@ import AdminDashboard from "./pages/AdminDashboard";
 import ResidentDashboard from "./pages/ResidentDashboard";
 import BillingModule from "./pages/BillingModule";
 import DetailedBilling from "./pages/DetailedBilling";
+import BillingFieldsManager from "./pages/BillingFieldsManager";
 import ComplaintsModule from "./pages/ComplaintsModule";
 import SubmitComplaint from "./pages/SubmitComplaint";
 import NoticesModule from "./pages/NoticesModule";
@@ -30,6 +31,7 @@ function Router() {
           <Route path="/" component={user?.role === 'admin' ? AdminDashboard : ResidentDashboard} />
           <Route path="/bills" component={BillingModule} />
           <Route path="/bills/detailed" component={DetailedBilling} />
+          <Route path="/bills/fields" component={BillingFieldsManager} />
           <Route path="/complaints" component={ComplaintsModule} />
           <Route path="/complaints/submit" component={SubmitComplaint} />
           <Route path="/notices" component={NoticesModule} />
