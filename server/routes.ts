@@ -30,6 +30,19 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Get user by phone number
+  app.get("/api/users/phone/:phoneNumber", async (req, res) => {
+    try {
+      const user = await storage.getUserByPhone(req.params.phoneNumber);
+      if (!user) {
+        return res.status(404).json({ error: "User not found" });
+      }
+      res.json(user);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to fetch user" });
+    }
+  });
+
   // User routes
   app.get("/api/users", async (req, res) => {
     try {

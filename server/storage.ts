@@ -63,6 +63,156 @@ export class MemStorage implements IStorage {
     this.currentComplaintId = 1;
     this.currentNoticeId = 1;
     this.currentActivityId = 1;
+    
+    // Add demo data
+    this.initializeDemoData();
+  }
+
+  private initializeDemoData() {
+    // Demo admin user
+    const admin: User = {
+      id: 1,
+      phoneNumber: "+919876543210",
+      name: "RWA President",
+      flatNumber: "101",
+      tower: "A",
+      role: "admin",
+      isActive: true,
+      createdAt: new Date(),
+    };
+    this.users.set(1, admin);
+    this.currentUserId = 2;
+
+    // Demo residents
+    const residents = [
+      { phoneNumber: "+919876543211", name: "Rajesh Kumar", flatNumber: "102", tower: "A" },
+      { phoneNumber: "+919876543212", name: "Priya Sharma", flatNumber: "201", tower: "A" },
+      { phoneNumber: "+919876543213", name: "Venkat Reddy", flatNumber: "301", tower: "B" },
+    ];
+
+    residents.forEach((resident, index) => {
+      const user: User = {
+        id: this.currentUserId++,
+        ...resident,
+        role: "resident",
+        isActive: true,
+        createdAt: new Date(),
+      };
+      this.users.set(user.id, user);
+    });
+
+    // Demo bills
+    const currentMonth = new Date().toISOString().slice(0, 7);
+    const dueDate = new Date();
+    dueDate.setDate(dueDate.getDate() + 5);
+
+    const bills = [
+      { flatNumber: "101", residentId: 1, amount: "3500", status: "paid" as const },
+      { flatNumber: "102", residentId: 2, amount: "3500", status: "unpaid" as const },
+      { flatNumber: "201", residentId: 3, amount: "4000", status: "unpaid" as const },
+      { flatNumber: "301", residentId: 4, amount: "3500", status: "overdue" as const },
+    ];
+
+    bills.forEach(bill => {
+      const billData: Bill = {
+        id: this.currentBillId++,
+        ...bill,
+        month: currentMonth,
+        dueDate,
+        paidAt: bill.status === "paid" ? new Date() : null,
+        createdAt: new Date(),
+      };
+      this.bills.set(billData.id, billData);
+    });
+
+    // Demo notices
+    const notices = [
+      {
+        title: "Monthly Maintenance Meeting",
+        description: "All residents are invited to attend the monthly maintenance meeting on 28th January at 6 PM in the community hall.",
+        isImportant: true,
+      },
+      {
+        title: "Water Supply Interruption",
+        description: "Water supply will be interrupted tomorrow from 10 AM to 2 PM for tank cleaning.",
+        isImportant: false,
+      },
+    ];
+
+    notices.forEach(notice => {
+      const noticeData: Notice = {
+        id: this.currentNoticeId++,
+        ...notice,
+        adminId: 1,
+        createdAt: new Date(),
+      };
+      this.notices.set(noticeData.id, noticeData);
+    });
+
+    // Demo complaints
+    const complaints = [
+      {
+        residentId: 2,
+        flatNumber: "102",
+        type: "plumbing",
+        subject: "Leaking bathroom tap",
+        description: "The bathroom tap has been leaking for 3 days. Please fix it urgently.",
+        status: "open" as const,
+        priority: "high" as const,
+      },
+      {
+        residentId: 3,
+        flatNumber: "201",
+        type: "electrical",
+        subject: "Lift not working",
+        description: "The lift has been out of order since yesterday evening.",
+        status: "in_progress" as const,
+        priority: "medium" as const,
+      },
+    ];
+
+    complaints.forEach(complaint => {
+      const complaintData: Complaint = {
+        id: this.currentComplaintId++,
+        ...complaint,
+        photoUrl: null,
+        resolvedAt: null,
+        createdAt: new Date(),
+      };
+      this.complaints.set(complaintData.id, complaintData);
+    });
+
+    // Demo activities
+    const activities = [
+      {
+        type: "payment_received",
+        title: "Payment received from 101",
+        description: "Maintenance bill of ₹3500 paid",
+        userId: 1,
+      },
+      {
+        type: "complaint_submitted",
+        title: "New complaint from 102",
+        description: "Leaking bathroom tap",
+        userId: 2,
+      },
+      {
+        type: "notice_posted",
+        title: "New notice posted",
+        description: "Monthly Maintenance Meeting",
+        userId: 1,
+      },
+    ];
+
+    activities.forEach(activity => {
+      const activityData: Activity = {
+        id: this.currentActivityId++,
+        ...activity,
+        metadata: null,
+        createdAt: new Date(),
+      };
+      this.activities.set(activityData.id, activityData);
+    });
   }
 
   // Users
@@ -79,6 +229,9 @@ export class MemStorage implements IStorage {
     const user: User = {
       ...insertUser,
       id,
+      tower: insertUser.tower || null,
+      role: insertUser.role || "resident",
+      isActive: insertUser.isActive !== undefined ? insertUser.isActive : true,
       createdAt: new Date(),
     };
     this.users.set(id, user);
@@ -116,6 +269,8 @@ export class MemStorage implements IStorage {
     const bill: Bill = {
       ...insertBill,
       id,
+      status: insertBill.status || "unpaid",
+      residentId: insertBill.residentId || null,
       paidAt: null,
       createdAt: new Date(),
     };
@@ -154,6 +309,9 @@ export class MemStorage implements IStorage {
     const complaint: Complaint = {
       ...insertComplaint,
       id,
+      status: insertComplaint.status || "open",
+      priority: insertComplaint.priority || "medium",
+      photoUrl: insertComplaint.photoUrl || null,
       resolvedAt: null,
       createdAt: new Date(),
     };
@@ -184,6 +342,7 @@ export class MemStorage implements IStorage {
     const notice: Notice = {
       ...insertNotice,
       id,
+      isImportant: insertNotice.isImportant !== undefined ? insertNotice.isImportant : false,
       createdAt: new Date(),
     };
     this.notices.set(id, notice);
@@ -202,6 +361,9 @@ export class MemStorage implements IStorage {
     const activity: Activity = {
       ...insertActivity,
       id,
+      description: insertActivity.description || null,
+      userId: insertActivity.userId || null,
+      metadata: insertActivity.metadata || null,
       createdAt: new Date(),
     };
     this.activities.set(id, activity);
