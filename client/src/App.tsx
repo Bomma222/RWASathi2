@@ -9,6 +9,7 @@ import BottomNavigation from "./components/BottomNavigation";
 import { useAuth } from "./hooks/useAuth";
 
 // Pages
+import Login from "./pages/Login";
 import AdminDashboard from "./pages/AdminDashboard";
 import ResidentDashboard from "./pages/ResidentDashboard";
 import WatchmanDashboard from "./pages/WatchmanDashboard";

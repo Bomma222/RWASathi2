@@ -59,7 +59,7 @@ export default function Header() {
                   <p className="text-xs text-gray-500 uppercase tracking-wide">Switch Profile</p>
                 </div>
                 
-                {demoUsers.map((demoUser, index) => (
+                {demoUsers?.map((demoUser, index) => (
                   <button
                     key={index}
                     onClick={() => {
@@ -107,26 +107,5 @@ export default function Header() {
         />
       )}
     </header>
-  );
-            <button className="w-full text-left px-4 py-2 text-sm hover:bg-gray-50 rounded">
-              <i className="fas fa-language mr-3 text-gray-600"></i>
-              {t('language')}: {t('language')}
-            </button>
-            <button className="w-full text-left px-4 py-2 text-sm hover:bg-gray-50 rounded">
-              <i className="fas fa-cog mr-3 text-gray-600"></i>
-              {t('settings')}
-            </button>
-            <hr className="my-2" />
-            <button 
-              onClick={handleLogout}
-              className="w-full text-left px-4 py-2 text-sm hover:bg-gray-50 rounded text-red-600"
-            >
-              <i className="fas fa-sign-out-alt mr-3"></i>
-              {t('logout')}
-            </button>
-          </div>
-        </div>
-      )}
-    </>
   );
 }

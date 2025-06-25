@@ -190,12 +190,18 @@ export const useAuth = () => {
     }
   };
 
+  const signOut = logout; // Alias for compatibility
+
   return {
     user,
     loading,
     sendOTP,
     verifyOTP,
     logout,
+    signOut,
+    switchUser,
+    currentUserIndex,
+    demoUsers,
     isAuthenticated: !!user?.isAuthenticated,
     isAdmin: user?.role === 'admin',
   };
