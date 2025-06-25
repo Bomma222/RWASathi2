@@ -36,6 +36,8 @@ export interface IStorage {
   getNotice(id: number): Promise<Notice | undefined>;
   getAllNotices(): Promise<Notice[]>;
   createNotice(notice: InsertNotice): Promise<Notice>;
+  updateNotice(id: number, updates: Partial<InsertNotice>): Promise<Notice | undefined>;
+  deleteNotice(id: number): Promise<boolean>;
   
   // Activities
   getRecentActivities(limit?: number): Promise<Activity[]>;
