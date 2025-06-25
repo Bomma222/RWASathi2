@@ -51,13 +51,15 @@ export async function seedDatabase() {
     const billingFieldsData = [
       {
         name: "General Maintenance",
+        label: "General Maintenance",
         type: "fixed" as const,
         amount: 2500.00,
         order: 1,
         isActive: true,
       },
       {
-        name: "Water Charges",
+        name: "Water Charges", 
+        label: "Water Charges (₹0.05/liter)",
         type: "calculated" as const,
         rate: 0.05,
         unit: "liters",
@@ -66,12 +68,14 @@ export async function seedDatabase() {
       },
       {
         name: "Electricity Common Area",
+        label: "Electricity Common Area",
         type: "variable" as const,
         order: 3,
         isActive: true,
       },
       {
         name: "Lift Maintenance",
+        label: "Lift Maintenance",
         type: "fixed" as const,
         amount: 300.00,
         order: 4,
