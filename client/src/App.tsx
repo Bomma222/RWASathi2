@@ -18,6 +18,7 @@ import DetailedBilling from "./pages/DetailedBilling";
 import BillingFieldsManager from "./pages/BillingFieldsManager";
 import BillingSummary from "./pages/BillingSummary";
 import AdminBillingDashboard from "./pages/AdminBillingDashboard";
+import PaymentManagement from "./pages/PaymentManagement";
 import ComplaintsModule from "./pages/ComplaintsModule";
 import SubmitComplaint from "./pages/SubmitComplaint";
 import NoticesModule from "./pages/NoticesModule";
@@ -30,12 +31,12 @@ function Router() {
   const { user } = useAuth();
 
   if (!user?.isAuthenticated) {
-    //return <Login />;
+    return <Login />;
   }
 
-  // Role-based home page component
-  const getHomePage = (role: string) => {
-    switch (role) {
+  // Role-based dashboard component
+  const getDashboardComponent = () => {
+    switch (user?.role) {
       case 'admin': return AdminDashboard;
       case 'watchman': return WatchmanDashboard;
       case 'resident':
@@ -43,21 +44,22 @@ function Router() {
     }
   };
 
-  const HomePage = getHomePage(user?.role || 'resident');
+  const DashboardComponent = getDashboardComponent();
 
   return (
     <div className="max-w-md mx-auto bg-white min-h-screen relative">
       <Header />
       <div className="flex-1 overflow-auto pb-20">
         <Switch>
-          <Route path="/" component={getDashboardComponent()} />
-          <Route path="/dashboard" component={getDashboardComponent()} />
+          <Route path="/" component={DashboardComponent} />
+          <Route path="/dashboard" component={DashboardComponent} />
           <Route path="/billing" component={user?.role === 'admin' ? AdminBillingDashboard : BillingSummary} />
           <Route path="/billing/summary" component={BillingSummary} />
           <Route path="/billing/module" component={BillingModule} />
           <Route path="/billing/detailed/:id" component={DetailedBilling} />
           <Route path="/billing/fields" component={BillingFieldsManager} />
           <Route path="/billing/readings" component={WaterMeterReading} />
+          <Route path="/billing/payments" component={PaymentManagement} />
           <Route path="/complaints" component={ComplaintsModule} />
           <Route path="/complaints/submit" component={SubmitComplaint} />
           <Route path="/notices" component={NoticesModule} />

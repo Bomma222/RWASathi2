@@ -9,7 +9,7 @@ export default function AdminBillingDashboard() {
       title: 'Billing Summary',
       description: 'View and manage monthly bills, record payments, and track dues',
       icon: 'fas fa-chart-bar',
-      href: '/billing',
+      href: '/billing/summary',
       color: 'bg-blue-500'
     },
     {
@@ -27,10 +27,10 @@ export default function AdminBillingDashboard() {
       color: 'bg-purple-500'
     },
     {
-      title: 'Payment Records',
-      description: 'Detailed view of all payments and transaction history',
+      title: 'Payment Management',
+      description: 'Record payments received and manage dues collection',
       icon: 'fas fa-receipt',
-      href: '/billing/module',
+      href: '/billing/payments',
       color: 'bg-green-500'
     }
   ];
@@ -82,7 +82,7 @@ export default function AdminBillingDashboard() {
                 Generate Monthly Bills
               </Button>
             </Link>
-            <Link href="/billing">
+            <Link href="/billing/summary">
               <Button className="w-full" variant="outline">
                 <i className="fas fa-eye mr-2"></i>
                 View Current Month
