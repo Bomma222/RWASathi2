@@ -213,12 +213,39 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Notice routes
-  app.get("/api/notices", async (req, res) => {
+  // Get all notices
+  app.get("/api/notices", async (req: Request, res: Response) => {
     try {
       const notices = await storage.getAllNotices();
       res.json(notices);
     } catch (error) {
-      res.status(500).json({ error: "Failed to fetch notices" });
+      console.error("Error getting notices:", error);
+      res.status(500).json({ error: "Internal server error" });
+    }
+  });
+
+  // Create new notice
+  app.post("/api/notices", async (req: Request, res: Response) => {
+    try {
+      const noticeData = insertNoticeSchema.parse(req.body);
+      const notice = await storage.createNotice(noticeData);
+      
+      // Log activity
+      await storage.createActivity({
+        type: "notice_published",
+        title: "Notice Published",
+        description: notice.title,
+        userId: notice.adminId,
+        metadata: JSON.stringify({ noticeId: notice.id })
+      });
+      
+      res.status(201).json(notice);
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        return res.status(400).json({ error: "Invalid notice data", details: error.errors });
+      }
+      console.error("Error creating notice:", error);
+      res.status(500).json({ error: "Internal server error" });
     }
   });
 

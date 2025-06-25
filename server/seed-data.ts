@@ -52,6 +52,7 @@ export async function seedDatabase() {
       {
         name: "General Maintenance",
         label: "General Maintenance",
+        category: "maintenance",
         type: "fixed" as const,
         amount: 2500.00,
         order: 1,
@@ -60,6 +61,7 @@ export async function seedDatabase() {
       {
         name: "Water Charges", 
         label: "Water Charges (₹0.05/liter)",
+        category: "utilities",
         type: "calculated" as const,
         rate: 0.05,
         unit: "liters",
@@ -68,7 +70,8 @@ export async function seedDatabase() {
       },
       {
         name: "Electricity Common Area",
-        label: "Electricity Common Area",
+        label: "Electricity Common Area", 
+        category: "utilities",
         type: "variable" as const,
         order: 3,
         isActive: true,
@@ -76,6 +79,7 @@ export async function seedDatabase() {
       {
         name: "Lift Maintenance",
         label: "Lift Maintenance",
+        category: "maintenance",
         type: "fixed" as const,
         amount: 300.00,
         order: 4,
@@ -90,22 +94,36 @@ export async function seedDatabase() {
     const billsData = [
       {
         flatNumber: "B-205",
+        residentId: insertedUsers[1].id,
         month: "2024-12",
+        previousReading: 12500,
+        currentReading: 15000,
+        waterUsage: 2500,
+        maintenanceCharges: 2500.00,
+        waterCharges: 125.00,
+        electricityCharges: 800.00,
+        otherCharges: 425.00,
         totalAmount: 3850.00,
+        presentDues: 0.00,
         status: "pending" as const,
         dueDate: new Date("2025-01-15"),
-        waterReading: 15000,
-        waterUsage: 2500,
       },
       {
         flatNumber: "C-304", 
+        residentId: insertedUsers[2].id,
         month: "2024-12",
+        previousReading: 10000,
+        currentReading: 12000,
+        waterUsage: 2000,
+        maintenanceCharges: 2500.00,
+        waterCharges: 100.00,
+        electricityCharges: 750.00,
+        otherCharges: 300.00,
         totalAmount: 3650.00,
+        presentDues: 0.00,
         status: "paid" as const,
         dueDate: new Date("2025-01-15"),
         paidAt: new Date("2024-12-28"),
-        waterReading: 12000,
-        waterUsage: 2000,
       },
     ];
 
@@ -116,17 +134,19 @@ export async function seedDatabase() {
     const complaintsData = [
       {
         residentId: insertedUsers[1].id,
-        title: "Water Pressure Issue",
+        flatNumber: "B-205",
+        type: "plumbing",
+        subject: "Water Pressure Issue",
         description: "Low water pressure in bathroom taps during morning hours",
-        category: "plumbing",
         priority: "medium" as const,
         status: "open" as const,
       },
       {
         residentId: insertedUsers[2].id,
-        title: "Lift Not Working",
+        flatNumber: "C-304",
+        type: "maintenance",
+        subject: "Lift Not Working",
         description: "Lift has been stuck on 3rd floor for 2 days",
-        category: "maintenance",
         priority: "high" as const,
         status: "in_progress" as const,
       },
@@ -139,15 +159,15 @@ export async function seedDatabase() {
     const noticesData = [
       {
         title: "Monthly Maintenance Meeting",
-        content: "Monthly RWA meeting scheduled for January 15th at 6 PM in the community hall. All residents are requested to attend.",
-        type: "meeting" as const,
-        priority: "medium" as const,
+        description: "Monthly RWA meeting scheduled for January 15th at 6 PM in the community hall. All residents are requested to attend.",
+        adminId: insertedUsers[0].id,
+        isImportant: false,
       },
       {
         title: "Water Supply Maintenance",
-        content: "Water supply will be interrupted on January 10th from 10 AM to 2 PM for tank cleaning. Please store water accordingly.",
-        type: "maintenance" as const,
-        priority: "high" as const,
+        description: "Water supply will be interrupted on January 10th from 10 AM to 2 PM for tank cleaning. Please store water accordingly.",
+        adminId: insertedUsers[0].id,
+        isImportant: true,
       },
     ];
 
@@ -160,19 +180,22 @@ export async function seedDatabase() {
         type: "payment_received",
         title: "Payment Received",
         description: "Maintenance payment received from C-304",
-        metadata: { amount: 3650, flatNumber: "C-304" },
+        userId: insertedUsers[2].id,
+        metadata: JSON.stringify({ amount: 3650, flatNumber: "C-304" }),
       },
       {
         type: "complaint_filed",
         title: "New Complaint Filed",
         description: "Water pressure issue reported by B-205",
-        metadata: { complaintId: insertedComplaints[0].id },
+        userId: insertedUsers[1].id,
+        metadata: JSON.stringify({ complaintId: insertedComplaints[0].id }),
       },
       {
         type: "notice_published",
         title: "Notice Published",
         description: "Monthly meeting notice published",
-        metadata: { noticeId: insertedNotices[0].id },
+        userId: insertedUsers[0].id,
+        metadata: JSON.stringify({ noticeId: insertedNotices[0].id }),
       },
     ];
 
