@@ -26,7 +26,7 @@ function Router() {
   const { user } = useAuth();
 
   if (!user?.isAuthenticated) {
-    return <Login />;
+    //return <Login />;
   }
 
   // Role-based home page component
@@ -46,7 +46,7 @@ function Router() {
       <Header />
       <main className="pt-20 pb-20 px-4">
         <Switch>
-          <Route path="/" component={HomePage} />
+          <Route path="/" component={AdminDashboard} />
           <Route path="/bills" component={BillingModule} />
           <Route path="/bills/detailed" component={DetailedBilling} />
           <Route path="/bills/fields" component={BillingFieldsManager} />
