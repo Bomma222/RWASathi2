@@ -4,11 +4,15 @@ import { z } from "zod";
 
 export const users = pgTable("users", {
   id: serial("id").primaryKey(),
-  phoneNumber: varchar("phone_number", { length: 15 }).notNull().unique(),
-  name: text("name").notNull(),
+  phoneNumber: varchar("phone_number", { length: 20 }).notNull().unique(),
+  name: varchar("name", { length: 100 }).notNull(),
   flatNumber: varchar("flat_number", { length: 10 }).notNull(),
-  tower: varchar("tower", { length: 5 }),
-  role: varchar("role", { length: 20 }).notNull().default("resident"), // 'admin' or 'resident'
+  role: varchar("role", { length: 20 }).notNull().default("resident"), // 'admin', 'resident', 'watchman'
+  residentType: varchar("resident_type", { length: 20 }).default("owner"), // 'owner', 'tenant'
+  flatStatus: varchar("flat_status", { length: 20 }).default("occupied"), // 'occupied', 'vacant'
+  email: varchar("email", { length: 100 }),
+  emergencyContact: varchar("emergency_contact", { length: 20 }),
+  moveInDate: timestamp("move_in_date"),
   isActive: boolean("is_active").notNull().default(true),
   createdAt: timestamp("created_at").notNull().defaultNow(),
 });
@@ -19,23 +23,21 @@ export const bills = pgTable("bills", {
   residentId: integer("resident_id").references(() => users.id),
   month: varchar("month", { length: 7 }).notNull(), // YYYY-MM format
   
-  // Water charges
-  pastWaterReading: integer("past_water_reading").default(0),
-  presentWaterReading: integer("present_water_reading").default(0),
-  usedLiters: integer("used_liters").default(0),
-  waterBill: decimal("water_bill", { precision: 10, scale: 2 }).default("0"),
+  // Water meter readings
+  previousReading: integer("previous_reading").default(0),
+  currentReading: integer("current_reading").default(0),
+  waterUsage: integer("water_usage").default(0),
   
-  // Fixed charges
-  generalMaintenance: decimal("general_maintenance", { precision: 10, scale: 2 }).default("1000"),
-  repairCharges: decimal("repair_charges", { precision: 10, scale: 2 }).default("0"),
-  
-  // Previous dues and payments
-  previousDues: decimal("previous_dues", { precision: 10, scale: 2 }).default("0"),
+  // Charge breakdown
+  maintenanceCharges: decimal("maintenance_charges", { precision: 10, scale: 2 }).default("0"),
+  waterCharges: decimal("water_charges", { precision: 10, scale: 2 }).default("0"),
+  electricityCharges: decimal("electricity_charges", { precision: 10, scale: 2 }).default("0"),
+  otherCharges: decimal("other_charges", { precision: 10, scale: 2 }).default("0"),
   totalAmount: decimal("total_amount", { precision: 10, scale: 2 }).notNull(),
   presentDues: decimal("present_dues", { precision: 10, scale: 2 }).notNull(),
   
   // Status and dates
-  status: varchar("status", { length: 20 }).notNull().default("unpaid"), // 'paid', 'unpaid', 'overdue', 'partially_cleared'
+  status: varchar("status", { length: 20 }).notNull().default("pending"), // 'paid', 'pending', 'overdue', 'partially_cleared'
   dueDate: timestamp("due_date").notNull(),
   paidAt: timestamp("paid_at"),
   createdAt: timestamp("created_at").notNull().defaultNow(),

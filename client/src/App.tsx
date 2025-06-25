@@ -16,6 +16,8 @@ import WatchmanDashboard from "./pages/WatchmanDashboard";
 import BillingModule from "./pages/BillingModule";
 import DetailedBilling from "./pages/DetailedBilling";
 import BillingFieldsManager from "./pages/BillingFieldsManager";
+import BillingSummary from "./pages/BillingSummary";
+import AdminBillingDashboard from "./pages/AdminBillingDashboard";
 import ComplaintsModule from "./pages/ComplaintsModule";
 import SubmitComplaint from "./pages/SubmitComplaint";
 import NoticesModule from "./pages/NoticesModule";
@@ -46,19 +48,24 @@ function Router() {
   return (
     <div className="max-w-md mx-auto bg-white min-h-screen relative">
       <Header />
-      <main className="pt-20 pb-20 px-4">
+      <div className="flex-1 overflow-auto pb-20">
         <Switch>
-          <Route path="/" component={AdminDashboard} />
-          <Route path="/bills" component={BillingModule} />
-          <Route path="/bills/detailed" component={DetailedBilling} />
-          <Route path="/bills/fields" component={BillingFieldsManager} />
+          <Route path="/" component={getDashboardComponent()} />
+          <Route path="/dashboard" component={getDashboardComponent()} />
+          <Route path="/billing" component={user?.role === 'admin' ? AdminBillingDashboard : BillingSummary} />
+          <Route path="/billing/summary" component={BillingSummary} />
+          <Route path="/billing/module" component={BillingModule} />
+          <Route path="/billing/detailed/:id" component={DetailedBilling} />
+          <Route path="/billing/fields" component={BillingFieldsManager} />
+          <Route path="/billing/readings" component={WaterMeterReading} />
           <Route path="/complaints" component={ComplaintsModule} />
           <Route path="/complaints/submit" component={SubmitComplaint} />
           <Route path="/notices" component={NoticesModule} />
           <Route path="/residents" component={ResidentManagement} />
+          <Route path="/flats" component={FlatManagement} />
           <Route component={NotFound} />
         </Switch>
-      </main>
+      </div>
       <BottomNavigation />
     </div>
   );

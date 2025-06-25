@@ -16,16 +16,16 @@ export default function BottomNavigation() {
       case 'admin':
         return [
           ...baseNavigation,
-          { name: t('bills'), href: '/bills', icon: 'fas fa-file-invoice-dollar' },
+          { name: t('billing'), href: '/billing', icon: 'fas fa-file-invoice-dollar' },
           { name: t('complaints'), href: '/complaints', icon: 'fas fa-exclamation-triangle' },
           { name: t('notices'), href: '/notices', icon: 'fas fa-bullhorn' },
-          { name: t('residents'), href: '/residents', icon: 'fas fa-users' },
+          { name: t('residents'), href: '/flats', icon: 'fas fa-users' },
         ];
       
       case 'resident':
         return [
           ...baseNavigation,
-          { name: t('bills'), href: '/bills', icon: 'fas fa-file-invoice-dollar' },
+          { name: t('billing'), href: '/billing', icon: 'fas fa-file-invoice-dollar' },
           { name: t('complaints'), href: '/complaints', icon: 'fas fa-exclamation-triangle' },
           { name: t('notices'), href: '/notices', icon: 'fas fa-bullhorn' },
         ];
