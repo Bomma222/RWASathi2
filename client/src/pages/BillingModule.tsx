@@ -39,6 +39,17 @@ export default function BillingModule() {
     },
   });
 
+  // Restrict billing access for watchman
+  if (user?.role === 'watchman') {
+    return (
+      <div className="text-center p-8">
+        <div className="text-4xl mb-4">🔒</div>
+        <h3 className="font-semibold text-gray-800 mb-2">Access Restricted</h3>
+        <p className="text-sm text-gray-600">Billing information is not available for your role.</p>
+      </div>
+    );
+  }
+
   if (isLoading) {
     return (
       <div className="flex items-center justify-center p-8">

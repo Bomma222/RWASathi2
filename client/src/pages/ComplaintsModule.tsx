@@ -7,11 +7,17 @@ import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useToast } from '@/hooks/use-toast';
 import { useLocation } from 'wouter';
+import WatchmanDashboard from './WatchmanDashboard';
 
 export default function ComplaintsModule() {
   const { user } = useAuth();
   const { toast } = useToast();
   const [, setLocation] = useLocation();
+
+  // For watchman, show the watchman dashboard instead
+  if (user?.role === 'watchman') {
+    return <WatchmanDashboard />;
+  }
   const [filterStatus, setFilterStatus] = useState<string>('all');
 
   const { data: complaints, isLoading } = useQuery({

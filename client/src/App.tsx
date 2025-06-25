@@ -11,6 +11,7 @@ import { useAuth } from "./hooks/useAuth";
 // Pages
 import AdminDashboard from "./pages/AdminDashboard";
 import ResidentDashboard from "./pages/ResidentDashboard";
+import WatchmanDashboard from "./pages/WatchmanDashboard";
 import BillingModule from "./pages/BillingModule";
 import DetailedBilling from "./pages/DetailedBilling";
 import BillingFieldsManager from "./pages/BillingFieldsManager";

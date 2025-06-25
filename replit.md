@@ -120,17 +120,16 @@ Preferred communication style: Simple, everyday language.
 
 ## Recent Changes
 
-- **June 24, 2025**: Complete RWA Sathi platform implementation
-  - Full-stack React + Firebase authentication system
-  - Mobile-first responsive design with Telugu/English localization
-  - Admin dashboard with resident management and analytics
+- **June 25, 2025**: Enhanced multi-user role system and customizable billing
+  - Implemented role-based access control with three user types (Admin, Resident, Watchman)
+  - Created distinct dashboards for each user role with appropriate functionality
+  - Added user profile switching functionality for testing different roles
+  - Built watchman dashboard focused on complaint tracking and facility management
   - Enhanced billing system with customizable fields and detailed breakdown
+  - Admin billing field configuration system for dynamic charge management
+  - Role-based navigation and access restrictions
   - Water meter reading tracking with automatic charge calculation
   - Complex billing structure matching real maintenance sheets
-  - Admin billing field configuration system for customizable charges
-  - Complaint management with photo uploads and priority levels
-  - Notice posting system with importance flags
-  - Demo data and authentication for testing
 
 ## Demo Credentials
 
