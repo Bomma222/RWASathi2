@@ -24,12 +24,28 @@ import NotFound from "@/pages/not-found";
 function Router() {
   const { user } = useAuth();
 
+  if (!user?.isAuthenticated) {
+    return <Login />;
+  }
+
+  // Role-based home page component
+  const getHomePage = (role: string) => {
+    switch (role) {
+      case 'admin': return AdminDashboard;
+      case 'watchman': return WatchmanDashboard;
+      case 'resident':
+      default: return ResidentDashboard;
+    }
+  };
+
+  const HomePage = getHomePage(user?.role || 'resident');
+
   return (
     <div className="max-w-md mx-auto bg-white min-h-screen relative">
       <Header />
       <main className="pt-20 pb-20 px-4">
         <Switch>
-          <Route path="/" component={user?.role === 'admin' ? AdminDashboard : ResidentDashboard} />
+          <Route path="/" component={HomePage} />
           <Route path="/bills" component={BillingModule} />
           <Route path="/bills/detailed" component={DetailedBilling} />
           <Route path="/bills/fields" component={BillingFieldsManager} />

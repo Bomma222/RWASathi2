@@ -12,40 +12,63 @@ export const useAuth = () => {
   const [user, setUser] = useState<AuthUser | null>(null);
   const [loading, setLoading] = useState(true);
   const [confirmationResult, setConfirmationResult] = useState<ConfirmationResult | null>(null);
+  const [currentUserIndex, setCurrentUserIndex] = useState(0);
+
+  // Demo users for role switching
+  const demoUsers = [
+    { phoneNumber: '+919876543210', role: 'admin', name: 'Admin User' },
+    { phoneNumber: '+919876543211', role: 'resident', name: 'Resident User' },
+    { phoneNumber: '+919876543212', role: 'watchman', name: 'Watchman User' },
+  ];
+
+  const switchUser = async (userIndex: number) => {
+    if (userIndex >= 0 && userIndex < demoUsers.length) {
+      setLoading(true);
+      try {
+        const selectedUser = demoUsers[userIndex];
+        const response = await fetch(`/api/users/phone/${selectedUser.phoneNumber}`);
+        
+        if (response.ok) {
+          const userData = await response.json();
+          const newUser = {
+            ...userData,
+            isAuthenticated: true,
+          } as AuthUser;
+          
+          setUser(newUser);
+          setCurrentUserIndex(userIndex);
+          localStorage.setItem('rwaSathiUser', JSON.stringify(userData));
+          localStorage.setItem('currentUserIndex', userIndex.toString());
+        }
+      } catch (error) {
+        console.error('User switch failed:', error);
+      } finally {
+        setLoading(false);
+      }
+    }
+  };
 
   useEffect(() => {
     // Check for saved user session first
     const savedUser = localStorage.getItem('rwaSathiUser');
-    if (savedUser) {
+    const savedUserIndex = localStorage.getItem('currentUserIndex');
+    
+    if (savedUser && savedUserIndex) {
       try {
         const userData = JSON.parse(savedUser);
+        const userIndex = parseInt(savedUserIndex);
         setUser({ ...userData, isAuthenticated: true });
+        setCurrentUserIndex(userIndex);
         setLoading(false);
         return;
       } catch (error) {
         localStorage.removeItem('rwaSathiUser');
+        localStorage.removeItem('currentUserIndex');
       }
     }
 
-    // Auto-login as admin for development
-    if (import.meta.env.DEV) {
-      const autoLoginAdmin = async () => {
-        try {
-          const response = await fetch('/api/users/phone/+919876543210');
-          if (response.ok) {
-            const userData = await response.json();
-            setUser({ ...userData, isAuthenticated: true });
-            localStorage.setItem('rwaSathiUser', JSON.stringify(userData));
-          }
-        } catch (error) {
-          console.error('Auto-login failed:', error);
-        }
-        setLoading(false);
-      };
-      
-      autoLoginAdmin();
-      return;
-    }
+    // Auto-login with first demo user for development
+    switchUser(0);
 
     const unsubscribe = auth.onAuthStateChanged(async (firebaseUser) => {
       if (firebaseUser && firebaseUser.phoneNumber) {

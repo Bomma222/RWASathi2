@@ -58,10 +58,18 @@ export default function BillingModule() {
     );
   }
 
-  const filteredBills = bills?.filter((bill: any) => {
+  // Filter bills based on user role
+  const userBills = user?.role === 'admin' 
+    ? bills 
+    : bills?.filter((bill: any) => 
+        bill.flatNumber === user?.flatNumber || 
+        (user?.role === 'resident' && bill.residentId === user?.id)
+      ) || [];
+
+  const filteredBills = userBills.filter((bill: any) => {
     if (filterStatus === 'all') return true;
     return bill.status === filterStatus;
-  }) || [];
+  });
 
   const collectedAmount = bills?.filter((bill: any) => bill.status === 'paid')
     .reduce((sum: number, bill: any) => sum + parseFloat(bill.amount), 0) || 0;
