@@ -52,7 +52,7 @@ export class DatabaseStorage implements IStorage {
   }
 
   async getAllResidents(): Promise<User[]> {
-    return await db.select().from(users).where(eq(users.role, 'resident'));
+    return await db.select().from(users);
   }
 
   // Bills

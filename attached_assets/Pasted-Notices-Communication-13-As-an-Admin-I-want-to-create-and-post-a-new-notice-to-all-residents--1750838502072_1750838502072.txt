@@ -1,0 +1,40 @@
+Notices & Communication
+
+13. **As an Admin, I want to create and post a new notice to all residents,** so that everyone is informed of important updates.
+14. **As an Admin, I want to edit or delete a notice if there's a mistake,** so that communication remains correct and clear.
+15. **As an Admin, I want to view how many flats have seen or acknowledged a notice (future feature),** so I can track reach.
+
+---
+
+Complaint Management
+
+16. **As an Admin, I want to view all complaints submitted by residents,** so that I can manage community issues effectively.
+17. **As an Admin, I want to assign a complaint to a staff member (like watchman or plumber),** so that action can be taken quickly.
+18. **As an Admin, I want to mark complaints as “In Progress” or “Resolved”,** so that residents stay informed about issue status.
+19. **As an Admin, I want to add internal notes to a complaint (e.g., site visit done),** so I can document resolution steps.
+
+---
+Reports & Data Export
+
+20. **As an Admin, I want to export the monthly billing summary to Excel or PDF,** so that I can maintain records offline.
+21. **As an Admin, I want to generate a flat-wise payment report for auditors,** so that end-of-year audits are easy.
+22. **As an Admin, I want to view charts (e.g., % flats paid vs. unpaid),** so that I can analyze trends and improve compliance.
+
+---
+ **System Configuration
+
+23. **As an Admin, I want to set per-liter water cost and default maintenance amount globally,** so that these apply consistently every month.
+24. **As an Admin, I want to create or duplicate last month’s billing template,** so I don’t have to start from scratch each time.
+25. **As an Admin, I want to switch the UI language (Telugu/English),** so I can comfortably navigate the system.
+
+---
+
+## 🔐 **Access & Security (Optional / Advanced)**
+
+26. **As an Admin, I want to restrict access to billing and admin tools only to authorized logins,** so that sensitive data is secure.
+27. **As an Admin, I want to see an activity log of changes made (e.g., bills edited),** so that I have traceability.
+
+
+
+
+

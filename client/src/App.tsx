@@ -20,6 +20,8 @@ import ComplaintsModule from "./pages/ComplaintsModule";
 import SubmitComplaint from "./pages/SubmitComplaint";
 import NoticesModule from "./pages/NoticesModule";
 import ResidentManagement from "./pages/ResidentManagement";
+import FlatManagement from "./pages/FlatManagement";
+import WaterMeterReading from "./pages/WaterMeterReading";
 import NotFound from "@/pages/not-found";
 
 function Router() {
