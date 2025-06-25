@@ -31,6 +31,7 @@ export interface IStorage {
   getAllComplaints(): Promise<Complaint[]>;
   createComplaint(complaint: InsertComplaint): Promise<Complaint>;
   updateComplaintStatus(id: number, status: string, resolvedAt?: Date): Promise<Complaint | undefined>;
+  updateComplaint(id: number, updates: Partial<InsertComplaint>): Promise<Complaint | undefined>;
   
   // Notices
   getNotice(id: number): Promise<Notice | undefined>;

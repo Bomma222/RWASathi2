@@ -201,14 +201,38 @@ export async function registerRoutes(app: Express): Promise<Server> {
       await storage.createActivity({
         type: "complaint_updated",
         title: `Complaint ${status}`,
-        description: `${complaint.subject} - Status updated to ${status}`,
+        description: `${complaint.title} - Status updated to ${status}`,
         userId: complaint.residentId,
-        metadata: JSON.stringify({ complaintId: complaint.id, status }),
       });
       
       res.json(complaint);
     } catch (error) {
       res.status(400).json({ error: "Invalid status update" });
+    }
+  });
+
+  app.put("/api/complaints/:id", async (req: Request, res: Response) => {
+    try {
+      const id = parseInt(req.params.id);
+      const updates = req.body;
+      const complaint = await storage.updateComplaint(id, updates);
+      
+      if (!complaint) {
+        return res.status(404).json({ error: "Complaint not found" });
+      }
+      
+      // Create activity log
+      await storage.createActivity({
+        type: "complaint_updated",
+        title: "Complaint Updated",
+        description: `Updated complaint: ${complaint.title}`,
+        userId: req.session.user?.id || 1
+      });
+      
+      res.json(complaint);
+    } catch (error) {
+      console.error("Error updating complaint:", error);
+      res.status(500).json({ error: "Failed to update complaint" });
     }
   });
 

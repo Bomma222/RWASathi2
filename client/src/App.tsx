@@ -20,8 +20,11 @@ import BillingSummary from "./pages/BillingSummary";
 import AdminBillingDashboard from "./pages/AdminBillingDashboard";
 import PaymentManagement from "./pages/PaymentManagement";
 import ComplaintsModule from "./pages/ComplaintsModule";
+import ComplaintsManagement from "./pages/ComplaintsManagement";
 import SubmitComplaint from "./pages/SubmitComplaint";
 import NoticesModule from "./pages/NoticesModule";
+import ReportsAnalytics from "./pages/ReportsAnalytics";
+import SystemConfiguration from "./pages/SystemConfiguration";
 import ResidentManagement from "./pages/ResidentManagement";
 import FlatManagement from "./pages/FlatManagement";
 import WaterMeterReading from "./pages/WaterMeterReading";
@@ -60,11 +63,13 @@ function Router() {
           <Route path="/billing/fields" component={BillingFieldsManager} />
           <Route path="/billing/readings" component={WaterMeterReading} />
           <Route path="/billing/payments" component={PaymentManagement} />
-          <Route path="/complaints" component={ComplaintsModule} />
+          <Route path="/complaints" component={user?.role === 'admin' ? ComplaintsManagement : ComplaintsModule} />
           <Route path="/complaints/submit" component={SubmitComplaint} />
           <Route path="/notices" component={NoticesModule} />
           <Route path="/residents" component={ResidentManagement} />
           <Route path="/flats" component={FlatManagement} />
+          <Route path="/reports" component={ReportsAnalytics} />
+          <Route path="/settings" component={SystemConfiguration} />
           <Route component={NotFound} />
         </Switch>
       </div>
