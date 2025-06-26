@@ -49,7 +49,7 @@ export default function PaymentManagement() {
     queryFn: async () => {
       const response = await fetch(`/api/bills?month=${selectedMonth}`);
       if (!response.ok) throw new Error('Failed to fetch bills');
-      return response.json() as Bill[];
+      return response.json() as Promise<Bill[]>;
     }
   });
 
@@ -59,22 +59,23 @@ export default function PaymentManagement() {
     queryFn: async () => {
       const response = await fetch('/api/residents');
       if (!response.ok) throw new Error('Failed to fetch residents');
-      return response.json() as User[];
+      return response.json() as Promise<User[]>;
     }
   });
 
   // Record payment mutation
   const recordPayment = useMutation({
     mutationFn: async (payment: PaymentRecord) => {
-      return apiRequest(`/api/bills/${payment.billId}/status`, {
-        method: 'PUT',
-        body: JSON.stringify({ 
+      return apiRequest(
+        'PUT',
+        `/api/bills/${payment.billId}/status`,
+        { 
           status: payment.status,
           paymentMethod: payment.paymentMethod,
           notes: payment.notes,
           amount: payment.amount
-        })
-      });
+        }
+      );
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['/api/bills'] });
@@ -98,10 +99,11 @@ export default function PaymentManagement() {
   // Mark bill as cleared mutation
   const markAsCleared = useMutation({
     mutationFn: async (billId: number) => {
-      return apiRequest(`/api/bills/${billId}/status`, {
-        method: 'PUT',
-        body: JSON.stringify({ status: 'paid' })
-      });
+      return apiRequest(
+        'PUT',
+        `/api/bills/${billId}/status`,
+        { status: 'paid' }
+      );
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['/api/bills'] });
