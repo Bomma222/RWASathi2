@@ -148,7 +148,10 @@ export class DatabaseStorage implements IStorage {
 
   // Billing Fields
   async getBillingFields(): Promise<BillingField[]> {
-    return await db.select().from(billingFields).orderBy(billingFields.order);
+    return await db
+      .select()
+      .from(billingFields)
+      .orderBy(billingFields.sortOrder);
   }
 
   async createBillingField(insertField: InsertBillingField): Promise<BillingField> {
@@ -167,7 +170,7 @@ export class DatabaseStorage implements IStorage {
 
   async deleteBillingField(id: number): Promise<boolean> {
     const result = await db.delete(billingFields).where(eq(billingFields.id, id));
-    return result.rowCount > 0;
+    return ((result as { rowCount?: number }).rowCount ?? 0) > 0;
   }
 
   // Bill Items
@@ -178,5 +181,38 @@ export class DatabaseStorage implements IStorage {
   async createBillItem(insertItem: InsertBillItem): Promise<BillItem> {
     const [item] = await db.insert(billItems).values(insertItem).returning();
     return item;
+  }
+
+  // -------------------------------------------------------------
+  // Additional interface methods required by IStorage
+  // -------------------------------------------------------------
+
+  async updateComplaint(
+    id: number,
+    updates: Partial<InsertComplaint>,
+  ): Promise<Complaint | undefined> {
+    const [complaint] = await db
+      .update(complaints)
+      .set(updates)
+      .where(eq(complaints.id, id))
+      .returning();
+    return complaint || undefined;
+  }
+
+  async updateNotice(
+    id: number,
+    updates: Partial<InsertNotice>,
+  ): Promise<Notice | undefined> {
+    const [notice] = await db
+      .update(notices)
+      .set(updates)
+      .where(eq(notices.id, id))
+      .returning();
+    return notice || undefined;
+  }
+
+  async deleteNotice(id: number): Promise<boolean> {
+    const result = await db.delete(notices).where(eq(notices.id, id));
+    return ((result as { rowCount?: number }).rowCount ?? 0) > 0;
   }
 }
