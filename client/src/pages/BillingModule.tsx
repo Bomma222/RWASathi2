@@ -14,7 +14,7 @@ export default function BillingModule() {
   const [, setLocation] = useLocation();
   const [filterStatus, setFilterStatus] = useState<string>('all');
 
-  const { data: bills, isLoading } = useQuery({
+  const { data: bills = [], isLoading } = useQuery<any[]>({
     queryKey: ['/api/bills'],
   });
 
@@ -71,11 +71,11 @@ export default function BillingModule() {
     return bill.status === filterStatus;
   });
 
-  const collectedAmount = bills?.filter((bill: any) => bill.status === 'paid')
-    .reduce((sum: number, bill: any) => sum + parseFloat(bill.amount), 0) || 0;
+  const collectedAmount = bills.filter((bill: any) => bill.status === 'paid')
+    .reduce((sum: number, bill: any) => sum + parseFloat(bill.totalAmount), 0);
 
-  const pendingAmount = bills?.filter((bill: any) => bill.status !== 'paid')
-    .reduce((sum: number, bill: any) => sum + parseFloat(bill.amount), 0) || 0;
+  const pendingAmount = bills.filter((bill: any) => bill.status !== 'paid')
+    .reduce((sum: number, bill: any) => sum + parseFloat(bill.totalAmount), 0);
 
   const handleMarkPaid = (billId: number) => {
     updateBillMutation.mutate({ id: billId, status: 'paid' });
@@ -154,7 +154,7 @@ export default function BillingModule() {
                 </p>
               </div>
               <div className="text-right">
-                <p className="font-semibold text-gray-800">₹{parseFloat(bill.totalAmount || bill.amount || '0').toLocaleString()}</p>
+                <p className="font-semibold text-gray-800">₹{parseFloat(bill.totalAmount || '0').toLocaleString()}</p>
                 <div className="flex items-center space-x-2">
                   <span className={`inline-block px-2 py-1 text-xs rounded-full ${getStatusColor(bill.status)}`}>
                     {getStatusText(bill.status)}

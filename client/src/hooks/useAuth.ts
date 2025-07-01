@@ -211,5 +211,6 @@ export const useAuth = () => {
 declare global {
   interface Window {
     recaptchaVerifier: RecaptchaVerifier | undefined;
+    demoPhoneNumber?: string;
   }
 }

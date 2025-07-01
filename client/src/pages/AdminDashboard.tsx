@@ -7,11 +7,11 @@ export default function AdminDashboard() {
   const { user } = useAuth();
   const [, setLocation] = useLocation();
 
-  const { data: stats, isLoading: statsLoading } = useQuery({
+  const { data: stats, isLoading: statsLoading } = useQuery<any>({
     queryKey: ['/api/dashboard/stats'],
   });
 
-  const { data: activities, isLoading: activitiesLoading } = useQuery({
+  const { data: activities = [], isLoading: activitiesLoading } = useQuery<any[]>({
     queryKey: ['/api/activities'],
   });
 
@@ -112,7 +112,7 @@ export default function AdminDashboard() {
           {t('recentActivities')}
         </h3>
         <div className="space-y-3">
-          {activities?.slice(0, 3).map((activity: any, index: number) => (
+          {activities.slice(0, 3).map((activity: any) => (
             <div key={activity.id} className="flex items-start space-x-3 py-2 border-b border-gray-100 last:border-0">
               <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
                 <i className={`fas ${getActivityIcon(activity.type)} text-xs text-blue-600`}></i>

@@ -35,7 +35,7 @@ export default function Header() {
           <div>
             <h1 className="font-bold text-lg text-gray-800">RWA Sathi</h1>
             <p className="text-xs text-gray-500">
-              {getRoleIcon(user?.role)} {getRoleName(user?.role)} - {user?.flatNumber}
+              {getRoleIcon(user?.role || '')} {getRoleName(user?.role || '')} - {user?.flatNumber ?? ''}
             </p>
           </div>
         </div>
