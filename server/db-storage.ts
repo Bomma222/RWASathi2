@@ -75,8 +75,7 @@ export class DatabaseStorage implements IStorage {
   }
 
   async updateBillStatus(id: number, status: string, paidAt?: Date): Promise<Bill | undefined> {
-    const updates: Partial<InsertBill> = { status };
-    if (paidAt) updates.paidAt = paidAt;
+    const updates: { status: string; paidAt?: Date } = { status };
     
     const [bill] = await db
       .update(bills)
@@ -110,8 +109,7 @@ export class DatabaseStorage implements IStorage {
   }
 
   async updateComplaintStatus(id: number, status: string, resolvedAt?: Date): Promise<Complaint | undefined> {
-    const updates: Partial<InsertComplaint> = { status };
-    if (resolvedAt) updates.resolvedAt = resolvedAt;
+    const updates: { status: string; resolvedAt?: Date } = { status };
     
     const [complaint] = await db
       .update(complaints)

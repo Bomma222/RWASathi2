@@ -112,9 +112,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
       await storage.createActivity({
         type: "bill_generated",
         title: `Bill generated for ${bill.flatNumber}`,
-        description: `Monthly maintenance bill of ₹${bill.amount} generated`,
+        description: `Monthly maintenance bill of ₹${bill.totalAmount} generated`,
         userId: bill.residentId,
-        metadata: JSON.stringify({ billId: bill.id, amount: bill.amount }),
+        metadata: JSON.stringify({ billId: bill.id, amount: bill.totalAmount }),
       });
       
       res.json(bill);
@@ -138,9 +138,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
         await storage.createActivity({
           type: "payment_received",
           title: `Payment received from ${bill.flatNumber}`,
-          description: `Maintenance bill of ₹${bill.amount} paid`,
+          description: `Maintenance bill of ₹${bill.totalAmount} paid`,
           userId: bill.residentId,
-          metadata: JSON.stringify({ billId: bill.id, amount: bill.amount }),
+          metadata: JSON.stringify({ billId: bill.id, amount: bill.totalAmount }),
         });
       }
       
@@ -202,7 +202,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       await storage.createActivity({
         type: "complaint_updated",
         title: `Complaint ${status}`,
-        description: `${complaint.title} - Status updated to ${status}`,
+        description: `${complaint.subject} - Status updated to ${status}`,
         userId: complaint.residentId,
       });
       
@@ -226,8 +226,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
       await storage.createActivity({
         type: "complaint_updated",
         title: "Complaint Updated",
-        description: `Updated complaint: ${complaint.title}`,
-        userId: req.session.user?.id || 1
+        description: `Updated complaint: ${complaint.subject}`,
+        userId: 1
       });
       
       res.json(complaint);
@@ -313,7 +313,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const complaints = await storage.getAllComplaints();
       
       const totalFlats = residents.length;
-      const pendingDues = pendingBills.reduce((sum, bill) => sum + parseFloat(bill.amount), 0);
+      const pendingDues = pendingBills.reduce((sum, bill) => sum + parseFloat(bill.presentDues ?? "0"), 0);
       const openComplaints = complaints.filter(c => c.status === 'open').length;
       
       res.json({
