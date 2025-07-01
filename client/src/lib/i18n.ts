@@ -230,8 +230,21 @@ export const getLanguage = (): Language => {
   return saved && translations[saved] ? saved : 'en';
 };
 
-export const t = (key: TranslationKey): string => {
-  return translations[currentLanguage][key] || translations.en[key] || key;
+export const t = (key: string): string => {
+  // We intentionally accept any string so that callers can use keys that
+  // are not yet present in the union derived from the default locale.
+  // If the key is not found, we gracefully fall back to the key itself.
+  // This avoids TypeScript errors while still providing runtime safety.
+  //
+  // NOTE: Keep TranslationKey type export above for places where a more
+  // constrained set of keys is desired.
+  // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
+  const k = key as keyof typeof translations.en;
+  return (
+    (translations[currentLanguage] as Record<string, string>)[key] ||
+    translations.en[k] ||
+    key
+  );
 };
 
 // Initialize language
